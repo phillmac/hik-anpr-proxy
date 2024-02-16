@@ -25,7 +25,7 @@ class HTTPParser extends EventEmitter {
       this.headersComplete = true;
     }
 
-    if(this.headersComplete && Buffer.byteLength(this.buffer > 0)) {
+    if(this.headersComplete && Buffer.byteLength(this.buffer) > 0) {
       this.emit('data', this.buffer);
       this.buffer = Buffer.alloc(0);
     }
