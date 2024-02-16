@@ -63,6 +63,7 @@ server.on('connection', (socket) => {
 
   // Handle body data
   parser.on('data', (d) => {
+    console.log({body, d});
     body = Buffer.concat([body, d]);
   });
 
