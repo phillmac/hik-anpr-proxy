@@ -41,6 +41,8 @@ server.on('connection', (socket) => {
     for (const h of headersList) {
       headers.append(... h.split(':'));
     }
+    headers.delete('host');
+    headers.delete('content-length');
 
     // Extract and parse query parameters from the request URL
     const [m, ...urlParts] = requestLine.split(' ');
