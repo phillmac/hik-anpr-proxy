@@ -73,7 +73,7 @@ server.on('connection', (socket) => {
   // Handle socket closure
   socket.on('end', () => {
     if(socket.writable) {
-      socket.write(`${httpVersion} 200 OK\r\n\r\n"OK"\r\n`);
+      socket.write(`HTTP/1.1 200 OK\r\n`);
     }
 
     console.log('Client disconnected.');
