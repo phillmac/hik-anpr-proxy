@@ -58,7 +58,7 @@ server.on('connection', (socket) => {
       urlObject = new URL(url, `http://${UPSTREAM_SERVER_HOST}:${UPSTREAM_SERVER_PORT}`);
       queryParams = urlObject.searchParams;
 
-      console.log(JSON.stringify({ method, httpVersion, path: urlObject.pathname, headersList, query: queryParams.entries()}));
+      console.log(JSON.stringify({ method, httpVersion, path: urlObject.pathname, headersList, urlParts, query: queryParams.entries()}));
 
     }
   });
