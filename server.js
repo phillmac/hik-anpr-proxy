@@ -76,7 +76,7 @@ server.on('connection', (socket) => {
 
     console.log('Client disconnected.');
 
-     if(method = 'POST') {
+     if(method?.toLowerCase() === 'post') {
       fetch(urlObject, {
         method,
         headers,
