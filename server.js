@@ -18,7 +18,9 @@ server.on('connection', (socket) => {
 
   const parser = new HTTPParser();
 
-  let method, httpVersion, urlObject, queryParams, body;
+  let method, httpVersion, urlObject, queryParams;
+
+  let body = Buffer.alloc(0);
 
   const headers = new Headers();
 
@@ -63,7 +65,6 @@ server.on('connection', (socket) => {
 
   // Handle body data
   parser.on('data', (d) => {
-    console.log({body, d});
     body = Buffer.concat([body, d]);
   });
 
