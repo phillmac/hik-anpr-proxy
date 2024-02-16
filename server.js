@@ -41,6 +41,7 @@ server.on('connection', (socket) => {
     for (const h of headersList) {
       headers.append(... h.split(':'));
     }
+
     headers.delete('host');
     headers.delete('content-length');
 
@@ -58,9 +59,8 @@ server.on('connection', (socket) => {
       const url = urlParts.join('%20');
 
       urlObject = new URL(url, `http://${UPSTREAM_SERVER_HOST}:${UPSTREAM_SERVER_PORT}`);
-      queryParams = urlObject.searchParams;
 
-      console.log(JSON.stringify({ method, httpVersion, path: urlObject.pathname, headersList, urlParts, query: queryParams.entries()}));
+      console.log(JSON.stringify({ method, httpVersion, path: urlObject.pathname, headersList, urlParts, search: urlObject.search}));
 
     }
   });
