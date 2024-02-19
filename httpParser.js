@@ -2,7 +2,7 @@
 
 const { EventEmitter } = require('events');
 
-class HTTPParser extends EventEmitter {
+export class HTTPParser extends EventEmitter {
   constructor() {
     super();
     this.buffer = Buffer.alloc(0);
@@ -31,5 +31,3 @@ class HTTPParser extends EventEmitter {
     }
   }
 }
-
-module.exports.HTTPParser = HTTPParser;
