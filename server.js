@@ -115,6 +115,9 @@ server.on('connection', (socket) => {
         })
         .then((upstreamResponse) => {
           if(upstreamResponse?.status !== 'ok') {
+            if(upstreamResponse?.duplicate !== false) {
+              console.warn('Upstream response duplicate: ', {status, ok, upstreamResponse});
+            }
             console.error('Upstream response: ', {status, ok, upstreamResponse});
           } else {
             console.log('Upstream response: ', {status, ok, upstreamResponse});
