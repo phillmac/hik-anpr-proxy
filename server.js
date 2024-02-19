@@ -3,7 +3,11 @@
 const net = require('net');
 const { URL } = require('url'); // Import the URL module
 const HTTPParser = require('./httpParser');
-const http = require('http');
+// const http = require('http');
+
+import { createCache } from 'simple-in-memory-cache';
+
+const { set, get } = createCache();
 
 
 const UPSTREAM_SERVER_HOST = 'hubtest.siteguard.online';
@@ -30,7 +34,7 @@ server.on('connection', (socket) => {
 
   const parser = new HTTPParser();
 
-  let method, httpVersion, urlObject, queryParams;
+  let method, httpVersion, urlObject, search, paramsList;
 
   let body = Buffer.alloc(0);
 
@@ -51,7 +55,7 @@ server.on('connection', (socket) => {
     const requestLine = headersList.shift(); // Assuming the first line is the request line
 
     for (const h of headersList) {
-      headers.append(... h.split(':'));
+      headers.append(...h.split(':'));
     }
 
     headers.delete('host');
@@ -72,7 +76,11 @@ server.on('connection', (socket) => {
 
       urlObject = new URL(url, `http://${UPSTREAM_SERVER_HOST}:${UPSTREAM_SERVER_PORT}`);
 
-      console.log(JSON.stringify({ method, httpVersion, path: urlObject.pathname, headersList, urlParts, search: urlObject.search}));
+      search = new URLSearchParams(urlObject.search);
+
+      paramsList = Array.from(search);
+
+      console.log(JSON.stringify({ method, httpVersion, path: urlObject.pathname, headersList, urlParts, paramsList }));
 
     }
   });
@@ -84,7 +92,7 @@ server.on('connection', (socket) => {
 
   // Handle socket closure
   socket.on('end', () => {
-    if(socket.writable) {
+    if (socket.writable) {
       socket.write(`HTTP/1.1 200 OK\r\n`);
       console.log('Sent ok to downstream');
     }
@@ -95,7 +103,22 @@ server.on('connection', (socket) => {
 
     let status, ok;
 
-     if(method?.toLowerCase() === 'post') {
+    if (method?.toLowerCase() === 'post') {
+
+      if (get(
+        `${search.get('SN')}.${search.get('licensePlate')}.${search.get('dateTime')}`,
+        true
+      )) {
+        console.info('Duplicate detected: ', JSON.stringify(
+          {
+            method,
+            httpVersion,
+            path: urlObject.pathname,
+            headersList,
+            urlParts,
+            paramsList
+          }));
+      }
       fetch(urlObject, {
         method,
         headers,
@@ -114,21 +137,25 @@ server.on('connection', (socket) => {
           }
         })
         .then((upstreamResponse) => {
-          if(upstreamResponse?.status !== 'ok') {
-            if(upstreamResponse?.duplicate !== false) {
-              console.warn('Upstream response duplicate: ', {status, ok, upstreamResponse});
+          if (upstreamResponse?.status !== 'ok') {
+            if (upstreamResponse?.duplicate !== false) {
+              console.warn('Upstream response duplicate: ', { status, ok, upstreamResponse });
+              set(
+                `${upstreamResponse.SN}.${upstreamResponse.licensePlate}.${upstreamResponse.dateTime}`,
+                true
+              );
             } else {
-              console.error('Upstream response: ', {status, ok, upstreamResponse});
+              console.error('Upstream response: ', { status, ok, upstreamResponse });
             }
           } else {
-            console.log('Upstream response: ', {status, ok, upstreamResponse});
+            console.log('Upstream response: ', { status, ok, upstreamResponse });
           }
         })
         .catch((err) => {
           // handle error
           console.error(err);
         });
-     }
+    }
   });
 });
 
