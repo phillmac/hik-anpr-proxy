@@ -1,9 +1,10 @@
 // server.js
 
-const net = require('net');
-const { URL } = require('url'); // Import the URL module
-const HTTPParser = require('./httpParser');
-// const http = require('http');
+import net from 'net';
+import { URL } from "url"
+
+import  HTTPParser from './httpParser';
+// import http from 'node:http';
 
 import { createCache } from 'simple-in-memory-cache';
 
