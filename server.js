@@ -114,7 +114,11 @@ server.on('connection', (socket) => {
           }
         })
         .then((upstreamResponse) => {
-          console.log('Upstream response: ', {status, ok, upstreamResponse});
+          if(upstreamResponse?.status !== 'ok') {
+            console.error('Upstream response: ', {status, ok, upstreamResponse});
+          } else {
+            console.log('Upstream response: ', {status, ok, upstreamResponse});
+          }
         })
         .catch((err) => {
           // handle error
