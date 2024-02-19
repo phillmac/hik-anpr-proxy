@@ -32,4 +32,4 @@ class HTTPParser extends EventEmitter {
   }
 }
 
-module.exports = HTTPParser;
+module.exports.HTTPParser = HTTPParser;
