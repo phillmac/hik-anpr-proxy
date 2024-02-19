@@ -1,6 +1,6 @@
 // httpParser.js
 
-const { EventEmitter } = require('events');
+import  { EventEmitter } from 'events';
 
 export class HTTPParser extends EventEmitter {
   constructor() {

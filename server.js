@@ -1,7 +1,7 @@
 // server.js
 
 import net from 'net';
-import { URL } from "url"
+import { URL } from 'url';
 
 import { HTTPParser } from './httpParser.js';
 // import http from 'node:http';
