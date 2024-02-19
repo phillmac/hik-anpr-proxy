@@ -112,10 +112,7 @@ server.on('connection', (socket) => {
       )) {
         console.info('Duplicate detected: ', JSON.stringify(
           {
-            method,
-            httpVersion,
             path: urlObject.pathname,
-            urlParts,
             paramsList
           }));
       }
