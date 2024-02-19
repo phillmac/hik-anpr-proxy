@@ -105,7 +105,7 @@ server.on('connection', (socket) => {
           ok = status = res.ok;
           status = res.status;
 
-          const contentType = response.headers.get("content-type");
+          const contentType = res.headers.get("content-type");
 
           if (contentType && contentType.indexOf("application/json") !== -1) {
             return res.json();
