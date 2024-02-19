@@ -115,7 +115,6 @@ server.on('connection', (socket) => {
             method,
             httpVersion,
             path: urlObject.pathname,
-            headersList,
             urlParts,
             paramsList
           }));
