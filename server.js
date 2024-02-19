@@ -104,9 +104,16 @@ server.on('connection', (socket) => {
         .then((res) => {
           ok = status = res.ok;
           status = res.status;
-          return res.json()
+
+          const contentType = response.headers.get("content-type");
+
+          if (contentType && contentType.indexOf("application/json") !== -1) {
+            return response.json();
+          } else {
+            return response.text();
+          }
         })
-        .then((jsonResponse) => {
+        .then((upstreamResponse) => {
           console.log('Upstream response: ', {status, ok, jsonResponse});
         })
         .catch((err) => {
