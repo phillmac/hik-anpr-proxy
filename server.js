@@ -115,43 +115,44 @@ server.on('connection', (socket) => {
             path: urlObject.pathname,
             paramsList
           }));
-      }
-      fetch(urlObject, {
-        method,
-        headers,
-        body
-      })
-        .then((res) => {
-          ok = status = res.ok;
-          status = res.status;
-
-          const contentType = res.headers.get("content-type");
-
-          if (contentType && contentType.indexOf("application/json") !== -1) {
-            return res.json();
-          } else {
-            return res.text();
-          }
+      } else {
+        fetch(urlObject, {
+          method,
+          headers,
+          body
         })
-        .then((upstreamResponse) => {
-          if (upstreamResponse?.status !== 'ok') {
-            if (upstreamResponse?.duplicate !== false) {
-              console.warn('Upstream response duplicate: ', { status, ok, upstreamResponse });
-              set(
-                `${upstreamResponse.SN}.${upstreamResponse.licensePlate}.${upstreamResponse.dateTime}`,
-                true
-              );
+          .then((res) => {
+            ok = status = res.ok;
+            status = res.status;
+
+            const contentType = res.headers.get("content-type");
+
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+              return res.json();
             } else {
-              console.error('Upstream response: ', { status, ok, upstreamResponse });
+              return res.text();
             }
-          } else {
-            console.log('Upstream response: ', { status, ok, upstreamResponse });
-          }
-        })
-        .catch((err) => {
-          // handle error
-          console.error(err);
-        });
+          })
+          .then((upstreamResponse) => {
+            if (upstreamResponse?.status !== 'ok') {
+              if (upstreamResponse?.duplicate !== false) {
+                console.warn('Upstream response duplicate: ', { status, ok, upstreamResponse });
+                set(
+                  `${upstreamResponse.SN}.${upstreamResponse.licensePlate}.${upstreamResponse.dateTime}`,
+                  true
+                );
+              } else {
+                console.error('Upstream response: ', { status, ok, upstreamResponse });
+              }
+            } else {
+              console.log('Upstream response: ', { status, ok, upstreamResponse });
+            }
+          })
+          .catch((err) => {
+            // handle error
+            console.error(err);
+          });
+      }
     }
   });
 });
