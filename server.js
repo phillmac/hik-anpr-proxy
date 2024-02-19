@@ -86,7 +86,7 @@ server.on('connection', (socket) => {
   socket.on('end', () => {
     if(socket.writable) {
       socket.write(`HTTP/1.1 200 OK\r\n`);
-      Console.log('Sent ok to downstream');
+      console.log('Sent ok to downstream');
     }
 
     socket.end()
