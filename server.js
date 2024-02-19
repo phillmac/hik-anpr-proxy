@@ -86,11 +86,14 @@ server.on('connection', (socket) => {
   socket.on('end', () => {
     if(socket.writable) {
       socket.write(`HTTP/1.1 200 OK\r\n`);
+      Console.log('Sent ok to downstream');
     }
 
     socket.end()
 
     console.log('Client disconnected.');
+
+    let status, ok;
 
      if(method?.toLowerCase() === 'post') {
       fetch(urlObject, {
@@ -98,8 +101,18 @@ server.on('connection', (socket) => {
         headers,
         body
       })
-        .then((result) => console.log(result.ok))
-        .catch(err => console.error(err));
+        .then((res) => {
+          ok = status = res.ok;
+          status = res.status;
+          return res.json()
+        })
+        .then((jsonResponse) => {
+          console.log('Upstream response: ', {status, ok, jsonResponse});
+        })
+        .catch((err) => {
+          // handle error
+          console.error(err);
+        });
      }
   });
 });
