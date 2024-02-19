@@ -108,13 +108,13 @@ server.on('connection', (socket) => {
           const contentType = response.headers.get("content-type");
 
           if (contentType && contentType.indexOf("application/json") !== -1) {
-            return response.json();
+            return res.json();
           } else {
-            return response.text();
+            return res.text();
           }
         })
         .then((upstreamResponse) => {
-          console.log('Upstream response: ', {status, ok, jsonResponse});
+          console.log('Upstream response: ', {status, ok, upstreamResponse});
         })
         .catch((err) => {
           // handle error
