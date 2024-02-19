@@ -3,7 +3,7 @@
 import net from 'net';
 import { URL } from "url"
 
-import  HTTPParser from './httpParser';
+import  HTTPParser from './httpParser.js';
 // import http from 'node:http';
 
 import { createCache } from 'simple-in-memory-cache';
