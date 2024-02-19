@@ -10,11 +10,23 @@ const UPSTREAM_SERVER_HOST = 'hubtest.siteguard.online';
 const UPSTREAM_SERVER_PORT = 80
 
 
-const server = net.createServer();
+const server = net.createServer({ allowHalfOpen: true });
 
 // Handle client connection
 server.on('connection', (socket) => {
   console.log('New client connected.');
+
+  socket.setKeepAlive(true);
+
+  socket.on('error', (err) => {
+    if (err.code === 'ECONNRESET') {
+      // Handle ECONNRESET error
+      console.error('Connection reset by peer');
+    } else {
+      // Handle other errors
+      console.error('Socket error:', err.message);
+    }
+  });
 
   const parser = new HTTPParser();
 
@@ -75,6 +87,8 @@ server.on('connection', (socket) => {
     if(socket.writable) {
       socket.write(`HTTP/1.1 200 OK\r\n`);
     }
+
+    socket.end()
 
     console.log('Client disconnected.');
 
